@@ -1,14 +1,9 @@
 Please select "Code" view before reading this document
 
-Executing below command will fetch the data, tranform and generate "cloud_store.txt" output file.
-$ go run main.go
-POST http://0.0.0.0:8888/datatx?cmd=start
-Response 
-201 Created
-Successfully collected data in cloud_store.txt
+Prerequest
+git clone git@github.com:karmegamp/cyderes.git
 
-
-Alternatively, we can execute the application via container by following below steps
+A. We can execute the application via container by following below steps
 
 1. Build the application container
 ==================================
@@ -35,3 +30,13 @@ total 44
 -rw-r--r-- 1 root root    25 Jun 14 18:34 go.mod
 -rw-r--r-- 1 root root  1889 Jun 26 21:09 main.go
 
+
+
+B. Alternatively, 
+
+Executing below command will fetch the data, tranform and generate "cloud_store.txt" output file.
+$ go run main.go
+POST http://0.0.0.0:8888/datatx?cmd=start
+Response 
+201 Created
+Successfully collected data in cloud_store.txt
