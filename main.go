@@ -3,13 +3,18 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"os"
+	"strings"
 	"sync"
 	"time"
 )
 
-const fetchURL = "http://jsonplaceholder.typicode.com/posts"
+const (
+	fetchURL   = "http://jsonplaceholder.typicode.com/posts"
+	cloudStore = "cloud_store.txt"
+)
 
 type userInfo struct {
 	UserId     int
@@ -20,58 +25,72 @@ type userInfo struct {
 	Source     string    `json:"source"`
 }
 
-func main() {
+var ch = make(chan userInfo)
+var wg sync.WaitGroup
 
-	fetch := func() ([]userInfo, error) {
-		res, err := http.Get(fetchURL)
-		if err != nil {
-			panic(err)
-		}
-		defer res.Body.Close()
+func startDataTransformation(res http.ResponseWriter, req *http.Request) {
+	if req.Method == "POST" {
+		cmd := req.URL.Query().Get("cmd")
+		if strings.Compare(cmd, "start") == 0 {
+			users, err := fetch()
+			if err != nil {
+				panic(err)
+			}
+			wg.Add(3)
+			go tranform(users)
+			go store()
+			go func() {
+				defer wg.Done()
+				wg.Wait()
+				close(ch)
+			}()
 
-		var users []userInfo
-		if err := json.NewDecoder(res.Body).Decode(&users); err != nil {
-			return nil, err
+			res.WriteHeader(201)
+			fmt.Fprintf(res, "Successfully collected data in %s", cloudStore)
 		}
-		return users, nil
 	}
+}
 
-	// 1. Collect data
-	users, err := fetch()
+// 1. Fetch data
+func fetch() ([]userInfo, error) {
+	res, err := http.Get(fetchURL)
 	if err != nil {
 		panic(err)
 	}
+	defer res.Body.Close()
 
-	ch := make(chan userInfo)
-	var wg sync.WaitGroup
-
-	// 2. Tranform data
-	tranform := func() {
-		defer wg.Done()
-		for _, user := range users {
-			u := userInfo{user.UserId, user.Id, user.Title, user.Body, time.Now(), "placeholder_api"}
-			ch <- u
-		}
-		close(ch)
+	var users []userInfo
+	if err := json.NewDecoder(res.Body).Decode(&users); err != nil {
+		return nil, err
 	}
-	wg.Add(1)
-	go tranform()
+	return users, nil
+}
 
-	// 3. Store to cloud storage (don't have cloud account yet)
-	store := func() {
-		defer wg.Done()
-		f, err := os.Create("./cloud_store.txt")
-		if err != nil {
-			panic(err)
-		}
-		for u := range ch {
-			record := fmt.Sprintf("\n{user_id:%d, id:%d, title:%s, body:%s,  ingested_at:%v, source: %s}\n", u.UserId, u.Id, u.Title, u.Body, u.IngestedAt, u.Source)
-			f.WriteString(record)
-		}
-		f.Close()
+// 2. Tranform data
+func tranform(users []userInfo) {
+	defer wg.Done()
+	for _, user := range users {
+		u := userInfo{user.UserId, user.Id, user.Title, user.Body, time.Now(), "placeholder_api"}
+		ch <- u
 	}
-	wg.Add(1)
-	go store()
+}
 
-	wg.Wait()
+// 3. Store to cloud storage (don't have personal cloud account)
+func store() {
+	defer wg.Done()
+	f, err := os.Create(cloudStore)
+	if err != nil {
+		panic("store creation failed")
+	}
+
+	for u := range ch {
+		record := fmt.Sprintf("\n{user_id:%d, id:%d, title:%s, body:%s,  ingested_at:%v, source: %s}\n", u.UserId, u.Id, u.Title, u.Body, u.IngestedAt, u.Source)
+		f.WriteString(record)
+	}
+	f.Close()
+}
+
+func main() {
+	http.HandleFunc("/datatx", startDataTransformation)
+	log.Fatal(http.ListenAndServe(":8888", nil))
 }

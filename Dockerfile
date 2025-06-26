@@ -13,14 +13,16 @@ RUN CGO_ENABLED=0 go build -o /bin/datatx
 
 # STAGE 2
 
-# Build two stage image
-FROM scratch
+# Build two stage image  
+# (disable bellow comment for debugging, for production enable this)
+# FROM scratch   
 
-# Container expose port
+# Container exposed port
 EXPOSE 8888 
 
 # Finally get the exe to target from previous stage
-COPY --from=build /bin/datatx /bin/datatx
+# (disable bellow comment for debugging, for production enable this)
+# COPY --from=build /bin/datatx /bin/datatx
 
 # Start the exe
 CMD [ "/bin/datatx"]
