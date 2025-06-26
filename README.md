@@ -1,3 +1,5 @@
+Please select "Code" view before reading this document
+
 Executing below command will fetch the data, tranform and generate "cloud_store.txt" output file.
 $ go run main.go
 POST http://0.0.0.0:8888/datatx?cmd=start
