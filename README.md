@@ -1,27 +1,24 @@
 Please select "Code" view before reading this document
 
 Prerequest
+==========
 git clone git@github.com:karmegamp/cyderes.git
 
 A. We can execute the application via container by following below steps
-
+========================================================================
 1. Build the application container
-==================================
 $docker image build . -t datatx:latest
 
 2. Start the application container
-==================================
 $docker container run -p 7777:8888 datatx:latest
 
 3. Start data fetch service for transformation
-==============================================
 POST   http://0.0.0.0:7777/datatx?cmd=start
 Response 
 201 Created
 Successfully collected data in cloud_store.txt
 
 4. Interrogate container 
-========================
 # ls
 cloud_store.txt  go.mod  main.go
 # ls -l
@@ -33,7 +30,7 @@ total 44
 
 
 B. Alternatively, 
-
+=================
 Executing below command will fetch the data, transform and generate "cloud_store.txt" output file.
 $ go run main.go
 POST http://0.0.0.0:8888/datatx?cmd=start
@@ -43,7 +40,7 @@ Successfully collected data in cloud_store.txt
 
 
 C. Kubernetes deployment details
-
+================================
 Create deployment
 $ kubectl create deployment datatx --image=docker.io/karmegamp/datatx:v1
 
