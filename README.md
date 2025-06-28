@@ -42,7 +42,7 @@ Response
 Successfully collected data in cloud_store.txt
 
 
-C. Kubernetes deployments details
+C. Kubernetes deployment details
 
 Create deployment
 $ kubectl create deployment datatx --image=docker.io/karmegamp/datatx:v1
