@@ -56,3 +56,8 @@ POST http:///127.0.0.1:52951/datatx?cmd=start
 Response 
 201 Created
 Successfully collected data in cloud_store.txt
+
+D. Contineous Deployment 
+========================
+Please refer below repo : 
+git@github.com:karmegamp/cyderes-deploy.git/cyderes-deploy/README.md

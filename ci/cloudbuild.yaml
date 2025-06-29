@@ -1,0 +1,10 @@
+steps:
+- id: cyderes-cloud-build
+  dir: ci
+  name: gcr.io/cloud-builders/docker
+  entrypoint: bash
+  args:
+    - docker 
+    - build
+    - tag datatx karmegamp/datatx:v2
+    - .
