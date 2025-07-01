@@ -1,8 +1,11 @@
 #!/bin/bash
-NEW_IMAGE_TAG=v3
+NEW_IMAGE_TAG=latest
 echo "Custom build script for cyderes continueous intergeration"
 
 cd ..
+
+echo "Syntax check"
+go vet *.go
 
 echo "Building new application image"
 docker image build . -t datatx:latest
