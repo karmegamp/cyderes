@@ -28,7 +28,7 @@ $ argocd login --core
 
 6. Create and link argoCD application with GitHub repository for K8s resource sync
 ==================================================================================
-$ argocd app create cyderes-deploy --repo https://github.com/karmegamp/cyderes.git --path cd --dest-server https://kubernetes.default.svc --dest-namespace default
+$ argocd app create cyderes-deploy --sync-policy automated --repo https://github.com/karmegamp/cyderes.git --path cd --dest-server https://kubernetes.default.svc --dest-namespace default
 
 7. Once K8s resource updated in GitHub, update the cluster 
 ===============================================================
