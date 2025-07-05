@@ -1,9 +1,5 @@
 Please select "Code" view before reading this document
 
-Prerequest
-==========
-git clone git@github.com:karmegamp/cyderes-deploy.git
-
 A. Continueous Deployment steps
 
 1. Install ArgoCD 
