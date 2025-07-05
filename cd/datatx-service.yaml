@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: "2025-06-29T00:31:50Z"
+  labels:
+    app: datatx
+  name: datatx
+  namespace: argocd
+  resourceVersion: "62012"
+  uid: bca770c4-f4fc-44fe-8778-33d33b708f12
+spec:
+  clusterIP: 10.111.164.73
+  clusterIPs:
+  - 10.111.164.73
+  externalTrafficPolicy: Cluster
+  internalTrafficPolicy: Cluster
+  ipFamilies:
+  - IPv4
+  ipFamilyPolicy: SingleStack
+  ports:
+  - nodePort: 30279
+    port: 8888
+    protocol: TCP
+    targetPort: 8888
+  selector:
+    app: datatx
+  sessionAffinity: None
+  type: NodePort
+status:
+  loadBalancer: {}
