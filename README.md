@@ -60,4 +60,4 @@ Successfully collected data in cloud_store.txt
 D. Contineous Deployment 
 ========================
 Please refer below repo : 
-git@github.com:karmegamp/cyderes-deploy.git/cyderes-deploy/README.md
+git@github.com:karmegamp/cyderes.git/README-DEPLOY.md
